@@ -2,6 +2,7 @@ const form = document.getElementById('control-row');
 const input = document.getElementById('input');
 const cookieInp = document.getElementById('cookieInp');
 const message = document.getElementById('message');
+const cookie_text = document.getElementById('cookie_text');
 
 // The async IIFE is necessary because Chrome <89 does not support top level await.
 (async function initPopupWindow() {
@@ -17,6 +18,13 @@ const message = document.getElementById('message');
         { domain: url.hostname },  // Use the hostname of the active tab
         (data) => {
           cookieInp.value = JSON.stringify(data);
+        }
+      );
+      chrome.cookies.getAll(
+        { domain: url.hostname },
+        (cookies) => {
+          const cookieString = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
+          cookie_text.textContent = cookieString;
         }
       );
     } catch {
